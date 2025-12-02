@@ -2,8 +2,8 @@ package infobip_mcp
 
 import (
 	"context"
-	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"go.k6.io/k6/lib"
@@ -38,7 +38,7 @@ func (r RoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
 	tags := r.state.Tags.GetCurrentValues().Tags.WithTagsFromMap(map[string]string{
 		"method": req.Method,
 		"url":    req.URL.String(),
-		"status": fmt.Sprintf("%d", statusCode),
+		"status": strconv.Itoa(statusCode),
 	})
 	now := time.Now()
 
