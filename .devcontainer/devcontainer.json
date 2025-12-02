@@ -14,7 +14,7 @@
   "features": {
     "ghcr.io/devcontainers/features/github-cli:1": { "version": "2.72.0" },
     "ghcr.io/devcontainers/features/go:1": {
-      "version": "1.25.4",
+      "version": "1.25.1",
       "golangciLintVersion": "2.1.6"
     },
     "ghcr.io/michidk/devcontainers-features/bun:1": { "version": "1.2.12" },
