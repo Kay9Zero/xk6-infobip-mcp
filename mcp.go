@@ -3,6 +3,7 @@ package infobip_mcp
 import (
 	"context"
 	"crypto/tls"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -160,7 +161,7 @@ func (client *MCPClient) pushMetrics(mcpAction string, duration time.Duration, i
 
 func (client *MCPClient) CallTool(toolName string, args map[string]any, rt *sobek.Runtime) string {
 	if client.session == nil {
-		common.Throw(rt, fmt.Errorf("MCP client not initialized. Call NewClient first"))
+		common.Throw(rt, errors.New("MCP client not initialized. Call NewClient first"))
 	}
 
 	params := &mcp.CallToolParams{
