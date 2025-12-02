@@ -9,7 +9,7 @@ export const options = {
 
 export default function () {
   try {
-    const client = NewClient({
+    NewClient({
       endpoint: "http://127.0.0.1/mcp",
       timeout: 1,
       isSSE: false,
