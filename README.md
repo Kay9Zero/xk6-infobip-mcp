@@ -26,7 +26,7 @@ export default function () {
   });
 
   // Call a tool on the MCP server
-  const result = client.CallTool("your_tool_name", {
+  const result = client.callTool("your_tool_name", {
     param1: "value1",
     param2: 42
   });
@@ -34,7 +34,7 @@ export default function () {
   console.log("Tool response:", result);
 
   // Clean up connection
-  client.CloseConnection();
+  client.closeConnection();
 }
 ```
 
@@ -73,7 +73,7 @@ Creates a new MCP client instance.
 
 **Returns:** MCPClient instance
 
-### MCPClient.CallTool(toolName, args)
+### MCPClient.callTool(toolName, args)
 
 Calls a tool on the MCP server.
 
@@ -83,7 +83,7 @@ Calls a tool on the MCP server.
 
 **Returns:** Tool response as string
 
-### MCPClient.CloseConnection()
+### MCPClient.closeConnection()
 
 Closes the MCP client connection.
 

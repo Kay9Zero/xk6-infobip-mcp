@@ -56,7 +56,7 @@ format:
 .PHONY: it
 it: 
 	@(\
-		./k6 run test/mcp-client.test.js;\
+		./k6 run test/smoke.test.js;\
 	)
 
 # Run the linter
