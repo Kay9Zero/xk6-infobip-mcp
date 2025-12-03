@@ -2,7 +2,7 @@
 
 **k6 extension for Model Context Protocol (MCP) integration**
 
-This k6 extension enables performance testing of MCP (Model Context Protocol) servers by providing a JavaScript API for creating MCP clients, calling tools, and managing connections. Perfect for load testing MCP-based applications and validating MCP server performance under various conditions.
+This k6 extension enables performance testing of MCP (Model Context Protocol) servers by providing a JavaScript API for creating MCP clients, calling tools, and managing connections. It is ideal for load testing MCP-based applications and validating MCP server performance under various conditions.
 
 
 Originally developed to load test [Infobip MCP Servers](https://www.infobip.com/docs/mcp?utm_source=xk6-infobip-mcp-github&utm_medium=referral&utm_campaign=mcp), this extension works with any MCP-compliant server implementation.
@@ -45,7 +45,7 @@ export default function () {
 ## Quick Start
 
 1. **Build a custom k6 binary with xk6-infobip-mcp**  
-   You need to build k6 with this extension using [xk6](https://github.com/grafana/xk6):
+   Use [xk6](https://github.com/grafana/xk6) to build k6 with this extension:
 
    ```sh
    go install go.k6.io/xk6/cmd/xk6@latest
@@ -84,7 +84,7 @@ Calls a tool on the MCP server.
 - `toolName` (string): Name of the tool to call
 - `args` (object): Arguments to pass to the tool
 
-**Returns:** Tool response as string
+**Returns:** Tool response as a string
 
 ### MCPClient.closeConnection()
 
