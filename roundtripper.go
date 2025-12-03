@@ -17,6 +17,8 @@ type RoundTripper struct {
 	state     *lib.State
 }
 
+// RoundTrip implements the http.RoundTripper interface. It intercepts HTTP requests
+// to add custom headers and collect detailed metrics
 func (r RoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
 	// Add custom headers
 	for k, v := range r.headers {
@@ -27,7 +29,6 @@ func (r RoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
 	resp, err := r.transport.RoundTrip(req)
 	duration := time.Since(start)
 
-	// Capture response data
 	statusCode := 0
 	var responseSize int64
 	if resp != nil {
