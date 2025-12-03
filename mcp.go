@@ -32,6 +32,7 @@ type ClientConfig struct {
 	Headers  map[string]string
 }
 
+// newClient creates a new MCP (Model Context Protocol) client with the provided configuration.
 func (m *module) newClient(c sobek.ConstructorCall, rt *sobek.Runtime) *sobek.Object {
 	m.logger.Debugf("Setting up new MCP client")
 
@@ -105,10 +106,12 @@ func (m *module) newClient(c sobek.ConstructorCall, rt *sobek.Runtime) *sobek.Ob
 	return rt.ToValue(mcpClient).ToObject(rt)
 }
 
+// CloseConnection terminates the MCP client session and cleans up resources.
 func (client *MCPClient) CloseConnection() error {
 	return client.session.Close()
 }
 
+// pushMetrics records performance metrics for MCP tool calls.
 func (client *MCPClient) pushMetrics(mcpAction string, duration time.Duration, isError bool) {
 	state := client.vu.State()
 	tags := state.Tags.GetCurrentValues().Tags.With(
@@ -159,6 +162,7 @@ func (client *MCPClient) pushMetrics(mcpAction string, duration time.Duration, i
 	})
 }
 
+// CallTool invokes a named tool through the MCP protocol with the provided arguments.
 func (client *MCPClient) CallTool(toolName string, args map[string]any, rt *sobek.Runtime) string {
 	if client.session == nil {
 		common.Throw(rt, errors.New("MCP client not initialized. Call NewClient first"))

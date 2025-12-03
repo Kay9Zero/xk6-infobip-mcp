@@ -22,6 +22,8 @@ type MCPMetrics struct {
 	TagsAndMeta *metrics.TagsAndMeta
 }
 
+// newMCPMetrics creates and initializes a new MCPMetrics instance with all required
+// MCP and HTTP metrics for tracking performance and success rates.
 func newMCPMetrics(env *common.InitEnvironment) *MCPMetrics {
 	return &MCPMetrics{
 		MCPCallDuration: env.Registry.MustNewMetric("mcp_call_duration", metrics.Trend, metrics.Time),
