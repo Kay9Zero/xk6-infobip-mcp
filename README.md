@@ -3,6 +3,7 @@
 **k6 extension for Model Context Protocol (MCP) integration**
 
 This k6 extension enables performance testing of MCP (Model Context Protocol) servers by providing a JavaScript API for creating MCP clients, calling tools, and managing connections. Perfect for load testing MCP-based applications and validating MCP server performance under various conditions.
+Originally developed to load test [Infobip MCP Servers](https://www.infobip.com/docs/mcp?utm_source=xk6-infobip-mcp-github&utm_medium=referral&utm_campaign=mcp), this extension works with any MCP-compliant server implementation.
 
 ## Example
 ```javascript file=script.js
