@@ -41,6 +41,10 @@ func (m *module) newClient(c sobek.ConstructorCall, rt *sobek.Runtime) *sobek.Ob
 		common.Throw(rt, fmt.Errorf("invalid config: %w", err))
 	}
 
+	if cfg.Timeout <= 0 {
+		cfg.Timeout = 2
+	}
+
 	m.logger.Debugf("newClient started: Endpoint=%s, isSSE=%v, timeout=%v", cfg.Endpoint, cfg.IsSSE, cfg.Timeout)
 
 	client := mcp.NewClient(&mcp.Implementation{Name: "k6-infobip-mcp", Version: "v1.0.0"}, nil)
