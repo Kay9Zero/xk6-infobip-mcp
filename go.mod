@@ -1,4 +1,4 @@
-module xk6-infobip-mcp
+module github.com/infobip/xk6-infobip-mcp
 
 go 1.24.0
 
