@@ -47,7 +47,7 @@ func (m *module) newClient(c sobek.ConstructorCall, rt *sobek.Runtime) *sobek.Ob
 
 	m.logger.Debugf("newClient started: Endpoint=%s, isSSE=%v, timeout=%v", cfg.Endpoint, cfg.IsSSE, cfg.Timeout)
 
-	client := mcp.NewClient(&mcp.Implementation{Name: "k6-infobip-mcp", Version: "v1.0.0"}, nil)
+	client := mcp.NewClient(&mcp.Implementation{Name: "xk6-infobip-mcp", Version: "v1.0.0"}, nil)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(cfg.Timeout)*time.Second)
 	defer cancel()
 
