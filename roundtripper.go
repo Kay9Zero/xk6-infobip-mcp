@@ -30,10 +30,8 @@ func (r RoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
 	duration := time.Since(start)
 
 	statusCode := 0
-	var responseSize int64
 	if resp != nil {
 		statusCode = resp.StatusCode
-		responseSize = max(resp.ContentLength, 0)
 	}
 
 	tags := r.state.Tags.GetCurrentValues().Tags.WithTagsFromMap(map[string]string{
@@ -83,15 +81,6 @@ func (r RoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
 		},
 		Time:  now,
 		Value: failureValue,
-	})
-
-	metrics.PushIfNotDone(context.Background(), r.state.Samples, metrics.Sample{
-		TimeSeries: metrics.TimeSeries{
-			Metric: r.metrics.HTTPResponseSize,
-			Tags:   tags,
-		},
-		Time:  now,
-		Value: float64(responseSize),
 	})
 
 	return resp, err

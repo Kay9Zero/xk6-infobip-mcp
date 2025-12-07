@@ -17,34 +17,24 @@ const smsToolArgs = {
   ]
 };
 
-// This will be created once per VU, reused across iterations
-let mcpClient;
-
 export default function () {
   // Initialize client only on first iteration for this VU
-  if (!mcpClient) {
-    mcpClient = mcp.NewClient({
-      endpoint: `${__ENV.MCP_SERVER_URL}`,
-      isSSE: false,
-      timeout: 60,
-      headers: {
-        "Authorization": `App ${__ENV.API_KEY}`,
-        "Content-Type": "application/json",
-        "Accept": "application/json, text/event-stream"
-      }
-    });
-  }
+  const mcpClient = mcp.NewClient({
+    endpoint: `${__ENV.MCP_SERVER_URL}`,
+    isSSE: false,
+    timeout: 60,
+    headers: {
+      "Authorization": `App ${__ENV.API_KEY}`,
+      "Content-Type": "application/json",
+      "Accept": "application/json, text/event-stream"
+    }
+  });
 
   // Reuse the same client for all iterations
   let res = mcpClient.callTool("send_sms_messages", smsToolArgs);
   check(res, {
     'result is not empty': (r) => r !== "",
   });
-}
 
-export function teardown() {
-  // Close when VU is done
-  if (mcpClient) {
-    mcpClient.closeConnection();
-  }
+  mcpClient.closeConnection();
 }
