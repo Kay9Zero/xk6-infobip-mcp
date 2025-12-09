@@ -17,7 +17,6 @@ type MCPMetrics struct {
 	HTTPRequestCount    *metrics.Metric
 	HTTPRequestErrors   *metrics.Metric
 	HTTPRequestSize     *metrics.Metric
-	HTTPResponseSize    *metrics.Metric
 
 	TagsAndMeta *metrics.TagsAndMeta
 }
@@ -34,7 +33,6 @@ func newMCPMetrics(env *common.InitEnvironment) *MCPMetrics {
 		HTTPRequestDuration: env.BuiltinMetrics.HTTPReqDuration,
 		HTTPRequestCount:    env.BuiltinMetrics.HTTPReqs,
 		HTTPRequestErrors:   env.BuiltinMetrics.HTTPReqFailed,
-		HTTPResponseSize:    env.BuiltinMetrics.HTTPReqReceiving,
 
 		TagsAndMeta: &metrics.TagsAndMeta{
 			Tags: env.Registry.RootTagSet(),
