@@ -98,8 +98,8 @@ Closes the MCP client connection.
 |-------------|------|-------------|
 | `mcp_call_duration` | Trend | Duration of individual MCP tool calls in milliseconds. Use this to analyze response times and identify slow operations. |
 | `mcp_calls` | Counter | Total number of MCP tool calls made during the test. Helps track the volume of operations executed. |
-| `mcp_success` | Rate | Success rate of MCP operations (0.0 to 1.0). A high rate indicates reliable server performance. |
-| `mcp_errors` | Rate | Error rate of MCP operations (0.0 to 1.0). Monitor this to identify reliability issues with your MCP server. |
+| `mcp_success` | Rate | Success rate of MCP operations in percentage. A high rate indicates reliable server performance. |
+| `mcp_errors` | Rate | Error rate of MCP operations in percentage. Monitor this to identify reliability issues with your MCP server. |
 
 ### HTTP Metrics
 
@@ -109,7 +109,7 @@ Since MCP communication happens over HTTP, standard k6 HTTP metrics are also col
 |-------------|------|-------------|
 | `http_req_duration` | Trend | Duration of HTTP requests to the MCP server in milliseconds. Includes connection time, sending, waiting, and receiving. |
 | `http_reqs` | Counter | Total number of HTTP requests made to the MCP server. Each MCP operation typically results in one or more HTTP requests. |
-| `http_req_failed` | Rate | Rate of failed HTTP requests (status codes ≥ 400). Note: Some specific status codes may not be considered failures (e.g., 404 for DELETE, 405 for GET). |
+| `http_req_failed` | Rate | Rate of failed HTTP requests in percentage (status codes ≥ 400). Note: Some specific status codes may not be considered failures (e.g., 404 for DELETE, 405 for GET). |
 
 ### Metric Tags
 
