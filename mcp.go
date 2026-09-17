@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/grafana/sobek"
@@ -192,16 +193,20 @@ func (client *MCPClient) CallTool(toolName string, args map[string]any, rt *sobe
 		return ""
 	}
 
-	txtResponse := ""
-	for _, c := range res.Content {
-		txtResponse += c.(*mcp.TextContent).Text
+	var response strings.Builder
+	for _, content := range res.Content {
+		textContent, ok := content.(*mcp.TextContent)
+		if ok {
+			response.WriteString(textContent.Text)
+		}
 	}
+	txtResponse := response.String()
 
 	client.logger.Debugf("=== MCP TOOL CALL ===")
 	client.logger.Debugf("Tool Name: %s", toolName)
 	client.logger.Debugf("Arguments: %+v", args)
 	client.logger.Debugf("Response IsError: %v", res.IsError)
-	client.logger.Debugf("Content text: ", txtResponse)
+	client.logger.Debugf("Content text: %s", txtResponse)
 	client.logger.Debugf("=====================")
 
 	client.pushMetrics(toolName, time.Since(start), res.IsError)
