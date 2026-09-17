@@ -8,36 +8,68 @@ This k6 extension enables performance testing of MCP (Model Context Protocol) se
 Originally developed to load test [Infobip MCP Servers](https://www.infobip.com/docs/mcp?utm_source=xk6-infobip-mcp-github&utm_medium=referral&utm_campaign=mcp), this extension works with any MCP-compliant server implementation.
 
 ## Example
-```javascript file=script.js
+```javascript file=examples/mcp.js
+import { check, sleep } from "k6";
 import mcp from "k6/x/infobip_mcp";
+import { randomIntBetween } from "https://jslib.k6.io/k6-utils/1.2.0/index.js";
 
 export const options = {
-  vus: 10,
-  duration: '30s',
+  scenarios: {
+    llm_spike_test: {
+      executor: "ramping-vus",
+      stages: [
+        { duration: "30s", target: 100 },
+        { duration: "30s", target: 100 },
+        { duration: "10s", target: 0 },
+      ],
+      gracefulStop: "5s",
+    },
+  },
 };
 
+const STEPS = [
+  {
+    step: 1,
+    tool: "search_articles",
+    args: {
+      query: "Cool MCP servers",
+    },
+  },
+  {
+    step: 2,
+    tool: "get_article_content",
+    args: {
+      id: "art_001",
+    },
+  },
+];
+
 export default function () {
-  // Create MCP client
-  const client = mcp.NewClient({
-    endpoint: "https://your-mcp-server.com/mcp",
-    timeout: 30,
+  // One client per iteration: connect, run every step, then close.
+  const mcpClient = mcp.NewClient({
+    endpoint: "http://localhost:8080/mcp",
     isSSE: false,
+    timeout: 60,
     headers: {
-      "Authorization": "Bearer your-token",
-      "Content-Type": "application/json"
+      Authorization: `App ${__ENV.API_KEY}`,
+      "Content-Type": "application/json",
+      Accept: "application/json, text/event-stream",
+    },
+  });
+
+  for (const stepConfig of STEPS) {
+    // The same client serves every step in this iteration.
+    let res = mcpClient.callTool(stepConfig.tool, stepConfig.args);
+    check(res, {
+      "result is not empty": (r) => r !== "",
+    });
+
+    if (stepConfig.step < STEPS.length) {
+      sleep(randomIntBetween(5, 10));
     }
-  });
+  }
 
-  // Call a tool on the MCP server
-  const result = client.callTool("your_tool_name", {
-    param1: "value1",
-    param2: 42
-  });
-
-  console.log("Tool response:", result);
-
-  // Clean up connection
-  client.closeConnection();
+  mcpClient.closeConnection();
 }
 ```
 
@@ -49,7 +81,7 @@ export default function () {
 
    ```sh
    go install go.k6.io/xk6/cmd/xk6@latest
-   xk6 build --with github.com/infobip/xk6-infobip-mcp
+   xk6 build v1.8.1 --with github.com/infobip/xk6-infobip-mcp
    ```
 
 2. **Write your test script**  
@@ -70,8 +102,8 @@ Creates a new MCP client instance.
 
 **Parameters:**
 - `config.endpoint` (string): MCP server endpoint URL
-- `config.timeout` (number): Connection timeout in seconds used for connection and tool call
-- `config.isSSE` (boolean): Use Server-Sent Events transport
+- `config.timeout` (number, optional): Connection timeout in seconds, used for both the connection and tool calls (defaults to 2)
+- `config.isSSE` (boolean, optional): Use the legacy Server-Sent Events transport instead of Streamable HTTP (defaults to false)
 - `config.headers` (object, optional): Custom HTTP headers
 
 **Returns:** MCPClient instance

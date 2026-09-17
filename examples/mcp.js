@@ -34,7 +34,7 @@ const STEPS = [
 ];
 
 export default function () {
-  // Initialize client only on first iteration for this VU
+  // One client per iteration: connect, run every step, then close.
   const mcpClient = mcp.NewClient({
     endpoint: "http://localhost:8080/mcp",
     isSSE: false,
@@ -47,7 +47,7 @@ export default function () {
   });
 
   for (const stepConfig of STEPS) {
-    // Reuse the same client for all iterations
+    // The same client serves every step in this iteration.
     let res = mcpClient.callTool(stepConfig.tool, stepConfig.args);
     check(res, {
       "result is not empty": (r) => r !== "",
