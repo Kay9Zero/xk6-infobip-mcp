@@ -73,16 +73,6 @@ func newTestMCPServer() *mcp.Server {
 	return server
 }
 
-// sseOption is the name k6 currently exposes for ClientConfig.IsSSE.
-//
-// k6 derives the JavaScript name of a struct field with snaker.CamelToSnake()
-// unless a `js` tag overrides it, so the documented `isSSE` option never
-// reaches the field and the SSE transport can only be selected through the
-// generated name. These tests use the generated name so the transport itself
-// stays covered; correcting the exported name changes the public API and is
-// deliberately left out of this change.
-const sseOption = "is_s_s_e"
-
 type moduleTestRuntime struct {
 	runtime *modulestest.Runtime
 	samples chan metrics.SampleContainer
@@ -247,11 +237,11 @@ func TestSSEClient(t *testing.T) {
 
 	runtime := newModuleTestRuntime(t, nil)
 	code := fmt.Sprintf(`(() => {
-		const client = mcp.NewClient({endpoint: %q, timeout: 30, %s: true});
+		const client = mcp.NewClient({endpoint: %q, timeout: 30, isSSE: true});
 		const greeting = JSON.parse(client.callTool("greet", {"name": "SSE"})).greeting;
 		client.closeConnection();
 		return greeting;
-	})()`, httpServer.URL, sseOption)
+	})()`, httpServer.URL)
 	require.Equal(t, "Hi SSE", runtime.run(t, code).String())
 }
 
@@ -338,8 +328,8 @@ func TestNewClientErrors(t *testing.T) {
 		runtime := newModuleTestRuntime(t, nil)
 		started := time.Now()
 		_, err := runtime.runtime.RunOnEventLoop(fmt.Sprintf(
-			`mcp.NewClient({endpoint: %q, timeout: 1, %s: true})`,
-			httpServer.URL, sseOption,
+			`mcp.NewClient({endpoint: %q, timeout: 1, isSSE: true})`,
+			httpServer.URL,
 		))
 		require.ErrorContains(t, err, "context deadline exceeded")
 		// The point is that the deadline is enforced at all rather than the

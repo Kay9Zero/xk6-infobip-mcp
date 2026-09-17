@@ -13,10 +13,10 @@ export as namespace infobip_mcp;
 export interface ClientConfig {
   /** MCP server endpoint URL */
   endpoint: string;
-  /** Connection timeout in seconds */
-  timeout: number;
-  /** Whether to use Server-Sent Events transport */
-  isSSE: boolean;
+  /** Connection timeout in seconds (defaults to 2) */
+  timeout?: number;
+  /** Whether to use the legacy Server-Sent Events transport (defaults to false) */
+  isSSE?: boolean;
   /** Custom HTTP headers to include with requests */
   headers?: Record<string, string>;
 }
@@ -30,7 +30,7 @@ export declare class MCPClient {
    *
    * @throws Error if connection cannot be closed
    */
-  CloseConnection(): void;
+  closeConnection(): void;
 
   /**
    * Call a tool on the MCP server
@@ -40,7 +40,7 @@ export declare class MCPClient {
    * @returns The response from the tool call as a string
    * @throws Error if tool call fails or connection issues occur
    */
-  CallTool(toolName: string, args: Record<string, any>): string;
+  callTool(toolName: string, args: Record<string, any>): string;
 }
 
 /**

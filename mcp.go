@@ -28,10 +28,10 @@ type MCPClient struct {
 }
 
 type ClientConfig struct {
-	Endpoint string
-	Timeout  int64
-	IsSSE    bool
-	Headers  map[string]string
+	Endpoint string            `js:"endpoint"`
+	Timeout  int64             `js:"timeout"`
+	IsSSE    bool              `js:"isSSE"`
+	Headers  map[string]string `js:"headers"`
 }
 
 // newClient creates a new MCP (Model Context Protocol) client with the provided configuration.
