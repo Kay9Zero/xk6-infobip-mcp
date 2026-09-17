@@ -20,6 +20,7 @@ import (
 type MCPClient struct {
 	session         *mcp.ClientSession
 	ctx             context.Context
+	cancel          context.CancelFunc
 	toolCallTimeout time.Duration
 	vu              modules.VU
 	logger          logrus.FieldLogger
@@ -49,8 +50,12 @@ func (m *module) newClient(c sobek.ConstructorCall, rt *sobek.Runtime) *sobek.Ob
 	m.logger.Debugf("newClient started: Endpoint=%s, isSSE=%v, timeout=%v", cfg.Endpoint, cfg.IsSSE, cfg.Timeout)
 
 	client := mcp.NewClient(&mcp.Implementation{Name: "xk6-infobip-mcp", Version: "v1.0.0"}, nil)
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(cfg.Timeout)*time.Second)
-	defer cancel()
+	// The session keeps using this context after Connect returns - the SSE
+	// receive loop reads from a request body built with it - so it has to
+	// live as long as the client does. The connect deadline is enforced by a
+	// timer instead, and stopped once the handshake succeeds.
+	ctx, cancel := context.WithCancel(context.Background())
+	connectTimer := time.AfterFunc(time.Duration(cfg.Timeout)*time.Second, cancel)
 
 	var tlsConfig *tls.Config
 	if m.vu.State().TLSConfig != nil {
@@ -95,13 +100,26 @@ func (m *module) newClient(c sobek.ConstructorCall, rt *sobek.Runtime) *sobek.Ob
 		session, sessionErr = client.Connect(ctx, streamableTransport, &mcp.ClientSessionOptions{})
 	}
 
+	if !connectTimer.Stop() {
+		// The deadline fired. Close a session that won the race, and report a
+		// timeout unless Connect had already failed for an unrelated reason.
+		if session != nil {
+			_ = session.Close()
+		}
+		if sessionErr == nil || errors.Is(sessionErr, context.Canceled) {
+			sessionErr = context.DeadlineExceeded
+		}
+	}
+
 	if sessionErr != nil {
+		cancel()
 		common.Throw(rt, fmt.Errorf("failed to connect: %w", sessionErr))
 	}
 
 	mcpClient := &MCPClient{
 		session:         session,
-		ctx:             context.Background(),
+		ctx:             ctx,
+		cancel:          cancel,
 		toolCallTimeout: time.Duration(cfg.Timeout) * time.Second,
 		vu:              m.vu,
 		logger:          m.logger,
@@ -113,6 +131,10 @@ func (m *module) newClient(c sobek.ConstructorCall, rt *sobek.Runtime) *sobek.Ob
 
 // CloseConnection terminates the MCP client session and cleans up resources.
 func (client *MCPClient) CloseConnection() error {
+	if client.cancel != nil {
+		defer client.cancel()
+	}
+
 	return client.session.Close()
 }
 
