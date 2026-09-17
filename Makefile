@@ -28,7 +28,7 @@ all: clean format lint security test build it doc readme makefile
 .PHONY: build
 build: 
 	@(\
-		xk6 build v1.8.1 --with xk6-infobip-mcp=.;\
+		xk6 build v2.2.0 --with xk6-infobip-mcp=.;\
 	)
 
 # Clean the working directory

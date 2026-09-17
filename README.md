@@ -81,7 +81,7 @@ export default function () {
 
    ```sh
    go install go.k6.io/xk6/cmd/xk6@latest
-   xk6 build v1.8.1 --with github.com/infobip/xk6-infobip-mcp
+   xk6 build v2.2.0 --with github.com/infobip/xk6-infobip-mcp
    ```
 
 2. **Write your test script**  

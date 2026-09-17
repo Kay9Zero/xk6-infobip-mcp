@@ -135,7 +135,7 @@ go test -count 1 -race -coverprofile=coverage.txt -timeout 60s ./...
 Use the `xk6 build` command to build custom k6 with extension.
 
 ```bash
-xk6 build v1.8.1 --with xk6-infobip-mcp=.
+xk6 build v2.2.0 --with xk6-infobip-mcp=.
 ```
 
 [build]: #build---build-custom-k6-with-extension
