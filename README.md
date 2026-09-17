@@ -103,7 +103,7 @@ Creates a new MCP client instance.
 **Parameters:**
 - `config.endpoint` (string): MCP server endpoint URL
 - `config.timeout` (number, optional): Connection timeout in seconds, used for both the connection and tool calls (defaults to 2)
-- `config.isSSE` (boolean, optional): Use the legacy Server-Sent Events transport instead of Streamable HTTP (defaults to false)
+- `config.isSSE` (boolean): Use Server-Sent Events transport
 - `config.headers` (object, optional): Custom HTTP headers
 
 **Returns:** MCPClient instance
